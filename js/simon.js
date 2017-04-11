@@ -1,15 +1,20 @@
-const levels =15
+const levels = 15
 let keys = generateKeys(levels)
 
 function nextLevel(currentLevel) {
 	if (currentLevel == levels) {
-		return alert('Ganaste')	
+		return notice('Ganaste','success')	
 	}
 
-	alert(`Nivel ${currentLevel + 1}`)
+	swal({
+			title: `Nivel ${currentLevel + 1}`,
+			type: 'info',
+			timer: 900,
+			showConfirmButton: false
+		})	
 
 	for (let i = 0; i <= currentLevel; i++) {
-		setTimeout(() => activate(keys[i]), (i+1) * 1000)
+		setTimeout(() => activate(keys[i]), 800 + (i+1) * 1000)
 	}
 
 	let i = 0
@@ -28,12 +33,38 @@ function nextLevel(currentLevel) {
 		} else {
 			activate(ev.keyCode, { fail: true })
 			window.removeEventListener('keydown', onkeydown)
-			alert('Perdiste')
+			
+			notice('Perdiste','warning')
 		}
 	}
 }
 
-nextLevel(0)
+function notice(title, type) {
+	swal({
+				title: `${title}!`,
+				text: 'Quieres jugar otra vez?',
+				type: type,
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Si',
+			  cancelButtonText: 'No',
+			  closeOnConfirm: true
+			}).then(function () {
+			  keys = generateKeys(levels)
+				nextLevel(0)
+			}, function (dismiss) {
+			  if (dismiss === 'cancel') {
+			    swal(
+			      'Bye Bye!',
+			      'Vuelve pronto',
+			      'info'
+			    )
+			  }
+			})
+}
+
+nextLevel(0) // Iniciar juego
 
 /* 
 * Para que funcione map, debemos poner cualquier valor dentro de cada posicion del array (fill(0))
