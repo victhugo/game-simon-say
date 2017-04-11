@@ -1,5 +1,39 @@
 const levels =15
-let key = generateKeys(levels)
+let keys = generateKeys(levels)
+
+function nextLevel(currentLevel) {
+	if (currentLevel == levels) {
+		return alert('Ganaste')	
+	}
+
+	alert(`Nivel ${currentLevel + 1}`)
+
+	for (let i = 0; i <= currentLevel; i++) {
+		setTimeout(() => activate(keys[i]), (i+1) * 1000)
+	}
+
+	let i = 0
+	let currentkey = keys[i]
+	window.addEventListener('keydown', onkeydown)
+
+	function onkeydown(ev) {
+		if (ev.keyCode == currentkey) {
+			activate(currentkey, {success: true})
+			i++
+			if ( i > currentLevel) { //para pasar de ronda
+				window.removeEventListener('keydown', onkeydown)
+				setTimeout(() => nextLevel(i),1200)
+			}
+			currentkey = keys[i]
+		} else {
+			activate(ev.keyCode, { fail: true })
+			window.removeEventListener('keydown', onkeydown)
+			alert('Perdiste')
+		}
+	}
+}
+
+nextLevel(0)
 
 /* 
 * Para que funcione map, debemos poner cualquier valor dentro de cada posicion del array (fill(0))
